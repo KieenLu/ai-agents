@@ -1,0 +1,30 @@
+{
+  "name": "claim-assessment-ai-agent",
+  "version": "1.0.0",
+  "description": "AI-powered claim assessment agent with clean architecture",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/presentation/api/server.js",
+    "dev": "ts-node src/presentation/api/server.ts",
+    "lint": "eslint src --ext .ts",
+    "test": "jest",
+    "test:scenarios": "ts-node tests/run-scenarios.ts"
+  },
+  "dependencies": {
+    "@ai-sdk/groq": "^3.0.40",
+    "ai": "^6.0.202",
+    "dotenv": "^17.4.2",
+    "express": "^4.19.2",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/jest": "^29.5.14",
+    "@types/node": "^22.5.0",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.2.5",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.5.0"
+  }
+}
