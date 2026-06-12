@@ -372,6 +372,223 @@ Example `claim-request.json`:
 - Medical necessity is satisfied.
 - Submitted amount is within benefit limit.
 
+**Result JSON:**
+
+```json
+{
+  "claimId": "CLM-APPROVE-001",
+  "assessmentDate": "2026-06-12T11:16:10.575Z",
+  "documentReview": {
+    "summary": "3 documents submitted, 3 required for inpatient_hospitalization",
+    "documents": [
+      {
+        "documentId": "DOC-001",
+        "documentType": "medical_receipt",
+        "status": "complete",
+        "issues": [],
+        "isRequired": true
+      },
+      {
+        "documentId": "DOC-002",
+        "documentType": "discharge_summary",
+        "status": "complete",
+        "issues": [],
+        "isRequired": true
+      },
+      {
+        "documentId": "DOC-003",
+        "documentType": "doctor_note",
+        "status": "complete",
+        "issues": [],
+        "isRequired": true
+      }
+    ],
+    "allRequiredDocumentsPresent": true
+  },
+  "policyVerification": {
+    "policyId": "POL-COMPREHENSIVE-001",
+    "memberName": "John Smith",
+    "policyStatus": "active",
+    "claimTypeIsCovered": true,
+    "coveragePeriodValid": true,
+    "coveragePeriodDetails": "Treatment date not provided; coverage period validation skipped",
+    "benefitLimit": 50000,
+    "copay": 500,
+    "issues": []
+  },
+  "medicalNecessity": {
+    "diagnosis": "Fractured tibia",
+    "procedures": ["orthopedic surgery"],
+    "isClinicallySuitable": true,
+    "reasoning": "Orthopedic surgery, casting, and imaging are standard treatment and stabilization for fractures.",
+    "confidenceScore": 0.95,
+    "issues": []
+  },
+  "benefitCalculation": {
+    "submittedAmount": 15000,
+    "benefitLimit": 50000,
+    "coveredAmount": 15000,
+    "copay": 500,
+    "deductible": 1000,
+    "memberResponsibility": 1500,
+    "insuranceResponsibility": 14500,
+    "remainingBenefitLimit": 35000,
+    "details": "Covered $15000 of $15000 submitted. Copay: $500, Deductible: $1000. Member responsible for $1500."
+  },
+  "recommendation": {
+    "decision": "APPROVE",
+    "primaryReason": "All checks passed",
+    "secondaryReasons": [],
+    "actionItems": ["No additional information required"]
+  },
+  "policyCitations": [
+    {
+      "clause": "inpatient_hospitalization",
+      "clauseName": "Coverage Inclusions Clause",
+      "citedText": "Inpatient hospitalization coverage including surgical procedures",
+      "applicationToThisClaim": "inpatient_hospitalization is covered with benefit limit 50000"
+    },
+    {
+      "clause": "Required Documents",
+      "clauseName": "Required Documentation Standards",
+      "citedText": "medical_receipt, discharge_summary, doctor_note",
+      "applicationToThisClaim": "All required documents were submitted and complete"
+    }
+  ],
+  "toolCallLog": [
+    {
+      "toolName": "verifyDocument",
+      "input": { "documentId": "DOC-001" },
+      "output": {
+        "documentId": "DOC-001",
+        "documentType": "medical_receipt",
+        "completeness": "complete",
+        "issues": [],
+        "submittedDate": "2026-06-10"
+      },
+      "timestamp": "2026-06-12T11:16:10.572Z",
+      "sequenceNumber": 1
+    },
+    {
+      "toolName": "verifyDocument",
+      "input": { "documentId": "DOC-002" },
+      "output": {
+        "documentId": "DOC-002",
+        "documentType": "discharge_summary",
+        "completeness": "complete",
+        "issues": [],
+        "submittedDate": "2026-06-10"
+      },
+      "timestamp": "2026-06-12T11:16:10.573Z",
+      "sequenceNumber": 2
+    },
+    {
+      "toolName": "verifyDocument",
+      "input": { "documentId": "DOC-003" },
+      "output": {
+        "documentId": "DOC-003",
+        "documentType": "doctor_note",
+        "completeness": "complete",
+        "issues": [],
+        "submittedDate": "2026-06-10"
+      },
+      "timestamp": "2026-06-12T11:16:10.573Z",
+      "sequenceNumber": 3
+    },
+    {
+      "toolName": "lookupPolicy",
+      "input": { "policyId": "POL-COMPREHENSIVE-001" },
+      "output": {
+        "policyId": "POL-COMPREHENSIVE-001",
+        "memberName": "John Smith",
+        "memberId": "MEM-001",
+        "policyType": "comprehensive",
+        "policyStartDate": "2024-01-01",
+        "policyEndDate": "2026-12-31",
+        "policyStatus": "active",
+        "coverageInclusions": [
+          {
+            "claimType": "inpatient_hospitalization",
+            "isCovered": true,
+            "benefitLimit": 50000,
+            "copay": 500,
+            "deductible": 1000,
+            "waitingPeriod": 0,
+            "description": "Inpatient hospitalization coverage including surgical procedures"
+          },
+          {
+            "claimType": "outpatient_surgery",
+            "isCovered": true,
+            "benefitLimit": 20000,
+            "copay": 300,
+            "deductible": 500,
+            "waitingPeriod": 0,
+            "description": "Outpatient surgical procedures and minor treatments"
+          }
+        ],
+        "exclusions": [
+          {
+            "exclusionType": "cosmetic_surgery",
+            "description": "Cosmetic procedures and treatments for aesthetic enhancement only",
+            "policyClause": "4.2"
+          }
+        ],
+        "requiredDocuments": [
+          {
+            "claimType": "inpatient_hospitalization",
+            "requiredDocs": ["medical_receipt", "discharge_summary", "doctor_note"]
+          },
+          {
+            "claimType": "outpatient_surgery",
+            "requiredDocs": ["medical_receipt", "discharge_summary"]
+          }
+        ]
+      },
+      "timestamp": "2026-06-12T11:16:10.573Z",
+      "sequenceNumber": 4
+    },
+    {
+      "toolName": "checkMedicalNecessity",
+      "input": {
+        "diagnosis": "Fractured tibia",
+        "procedures": ["orthopedic surgery"]
+      },
+      "output": {
+        "diagnosis": "Fractured tibia",
+        "procedures": ["orthopedic surgery"],
+        "isClinicallySuitable": true,
+        "reasoning": "Orthopedic surgery, casting, and imaging are standard treatment and stabilization for fractures.",
+        "confidenceScore": 0.95
+      },
+      "timestamp": "2026-06-12T11:16:10.574Z",
+      "sequenceNumber": 5
+    },
+    {
+      "toolName": "calculateBenefit",
+      "input": {
+        "policyId": "POL-COMPREHENSIVE-001",
+        "claimType": "inpatient_hospitalization",
+        "amount": 15000
+      },
+      "output": {
+        "policyId": "POL-COMPREHENSIVE-001",
+        "claimType": "inpatient_hospitalization",
+        "submittedAmount": 15000,
+        "benefitLimit": 50000,
+        "copay": 500,
+        "deductibleApplied": 1000,
+        "coveredAmount": 15000,
+        "memberResponsibility": 1500,
+        "remainingBenefitLimit": 35000,
+        "details": "Covered $15000 of $15000 submitted. Copay: $500, Deductible: $1000. Member responsible for $1500."
+      },
+      "timestamp": "2026-06-12T11:16:10.574Z",
+      "sequenceNumber": 6
+    }
+  ]
+}
+```
+
 ---
 
 ### Test Case 2: REJECT_CASE
@@ -400,6 +617,226 @@ Example `claim-request.json`:
 - Cosmetic surgery is excluded.
 - Benefit calculation returns `0`.
 
+**Result JSON:**
+
+```json
+{
+  "claimId": "CLM-REJECT-001",
+  "assessmentDate": "2026-06-12T11:19:45.163Z",
+  "documentReview": {
+    "summary": "2 documents submitted, 0 required for cosmetic_surgery",
+    "documents": [
+      {
+        "documentId": "DOC-101",
+        "documentType": "medical_receipt",
+        "status": "complete",
+        "issues": [],
+        "isRequired": false
+      },
+      {
+        "documentId": "DOC-102",
+        "documentType": "procedure_report",
+        "status": "complete",
+        "issues": [],
+        "isRequired": false
+      }
+    ],
+    "allRequiredDocumentsPresent": true
+  },
+  "policyVerification": {
+    "policyId": "POL-STANDARD-001",
+    "memberName": "Jane Doe",
+    "policyStatus": "active",
+    "claimTypeIsCovered": false,
+    "coveragePeriodValid": true,
+    "coveragePeriodDetails": "Treatment date not provided; coverage period validation skipped",
+    "benefitLimit": 0,
+    "copay": 0,
+    "issues": [
+      "Claim type 'cosmetic_surgery' is not covered under this policy",
+      "Treatment falls under policy exclusion: Cosmetic procedures are excluded from coverage"
+    ]
+  },
+  "medicalNecessity": {
+    "diagnosis": "Rhinoplasty for aesthetic enhancement",
+    "procedures": ["cosmetic rhinoplasty"],
+    "isClinicallySuitable": false,
+    "reasoning": "Cosmetic-only procedures are elective and not medically necessary without documented functional impairment.",
+    "confidenceScore": 0.95,
+    "issues": [
+      "Treatment not appropriate: Cosmetic-only procedures are elective and not medically necessary without documented functional impairment."
+    ]
+  },
+  "benefitCalculation": {
+    "submittedAmount": 8000,
+    "benefitLimit": 0,
+    "coveredAmount": 0,
+    "copay": 0,
+    "deductible": 0,
+    "memberResponsibility": 8000,
+    "insuranceResponsibility": 0,
+    "remainingBenefitLimit": 0,
+    "details": "Claim type 'cosmetic_surgery' is not covered under this policy - no benefit available"
+  },
+  "recommendation": {
+    "decision": "REJECT",
+    "primaryReason": "Claim type 'cosmetic_surgery' is not covered under this policy",
+    "secondaryReasons": [
+      "Treatment falls under policy exclusion: Cosmetic procedures are excluded from coverage",
+      "Treatment not clinically appropriate: Cosmetic-only procedures are elective and not medically necessary without documented functional impairment."
+    ],
+    "actionItems": [
+      "Claim type 'cosmetic_surgery' is not covered under this policy",
+      "Treatment falls under policy exclusion: Cosmetic procedures are excluded from coverage",
+      "Treatment not clinically appropriate: Cosmetic-only procedures are elective and not medically necessary without documented functional impairment."
+    ]
+  },
+  "policyCitations": [
+    {
+      "clause": "cosmetic_surgery",
+      "clauseName": "Coverage Inclusions Clause",
+      "citedText": "No coverage inclusion found for this claim type",
+      "applicationToThisClaim": "Claim type 'cosmetic_surgery' is not covered under this policy"
+    },
+    {
+      "clause": "Exclusion Clause 4.2",
+      "clauseName": "Exclusions Clause",
+      "citedText": "Cosmetic procedures are excluded from coverage",
+      "applicationToThisClaim": "Treatment falls under policy exclusion: Cosmetic procedures are excluded from coverage"
+    },
+    {
+      "clause": "Medical Necessity",
+      "clauseName": "Medical Necessity Standards",
+      "citedText": "Medical necessity review result",
+      "applicationToThisClaim": "Treatment not clinically appropriate: Cosmetic-only procedures are elective and not medically necessary without documented functional impairment."
+    }
+  ],
+  "toolCallLog": [
+    {
+      "toolName": "verifyDocument",
+      "input": { "documentId": "DOC-101" },
+      "output": {
+        "documentId": "DOC-101",
+        "documentType": "medical_receipt",
+        "completeness": "complete",
+        "issues": [],
+        "submittedDate": "2026-03-15"
+      },
+      "timestamp": "2026-06-12T11:19:45.161Z",
+      "sequenceNumber": 1
+    },
+    {
+      "toolName": "verifyDocument",
+      "input": { "documentId": "DOC-102" },
+      "output": {
+        "documentId": "DOC-102",
+        "documentType": "procedure_report",
+        "completeness": "complete",
+        "issues": [],
+        "submittedDate": "2026-03-15"
+      },
+      "timestamp": "2026-06-12T11:19:45.161Z",
+      "sequenceNumber": 2
+    },
+    {
+      "toolName": "lookupPolicy",
+      "input": { "policyId": "POL-STANDARD-001" },
+      "output": {
+        "policyId": "POL-STANDARD-001",
+        "memberName": "Jane Doe",
+        "memberId": "MEM-002",
+        "policyType": "standard",
+        "policyStartDate": "2025-01-01",
+        "policyEndDate": "2026-12-31",
+        "policyStatus": "active",
+        "coverageInclusions": [
+          {
+            "claimType": "inpatient_hospitalization",
+            "isCovered": true,
+            "benefitLimit": 30000,
+            "copay": 500,
+            "deductible": 1000,
+            "waitingPeriod": 0,
+            "description": "Inpatient hospitalization"
+          },
+          {
+            "claimType": "outpatient_surgery",
+            "isCovered": true,
+            "benefitLimit": 15000,
+            "copay": 250,
+            "deductible": 500,
+            "waitingPeriod": 0,
+            "description": "Outpatient surgical procedures"
+          }
+        ],
+        "exclusions": [
+          {
+            "exclusionType": "cosmetic_surgery",
+            "description": "Cosmetic procedures are excluded from coverage",
+            "policyClause": "4.2"
+          },
+          {
+            "exclusionType": "experimental_treatment",
+            "description": "Experimental or investigational treatments not yet approved",
+            "policyClause": "4.5"
+          }
+        ],
+        "requiredDocuments": [
+          {
+            "claimType": "inpatient_hospitalization",
+            "requiredDocs": ["medical_receipt", "discharge_summary"]
+          },
+          {
+            "claimType": "outpatient_surgery",
+            "requiredDocs": ["medical_receipt", "discharge_summary"]
+          }
+        ]
+      },
+      "timestamp": "2026-06-12T11:19:45.161Z",
+      "sequenceNumber": 3
+    },
+    {
+      "toolName": "checkMedicalNecessity",
+      "input": {
+        "diagnosis": "Rhinoplasty for aesthetic enhancement",
+        "procedures": ["cosmetic rhinoplasty"]
+      },
+      "output": {
+        "diagnosis": "Rhinoplasty for aesthetic enhancement",
+        "procedures": ["cosmetic rhinoplasty"],
+        "isClinicallySuitable": false,
+        "reasoning": "Cosmetic-only procedures are elective and not medically necessary without documented functional impairment.",
+        "confidenceScore": 0.95
+      },
+      "timestamp": "2026-06-12T11:19:45.162Z",
+      "sequenceNumber": 4
+    },
+    {
+      "toolName": "calculateBenefit",
+      "input": {
+        "policyId": "POL-STANDARD-001",
+        "claimType": "cosmetic_surgery",
+        "amount": 8000
+      },
+      "output": {
+        "policyId": "POL-STANDARD-001",
+        "claimType": "cosmetic_surgery",
+        "submittedAmount": 8000,
+        "benefitLimit": 0,
+        "copay": 0,
+        "deductibleApplied": 0,
+        "coveredAmount": 0,
+        "memberResponsibility": 8000,
+        "remainingBenefitLimit": 0,
+        "details": "Claim type 'cosmetic_surgery' is not covered under this policy - no benefit available"
+      },
+      "timestamp": "2026-06-12T11:19:45.162Z",
+      "sequenceNumber": 5
+    }
+  ]
+}
+```
+
 ---
 
 ### Test Case 3: REQUEST_MORE_INFO_CASE
@@ -426,6 +863,217 @@ Example `claim-request.json`:
 - `discharge_summary` is missing.
 - `DOC-202` is a type mismatch: `prescription` was submitted instead of the required `discharge_summary`.
 - The system requests more information instead of rejecting.
+
+**Result JSON:**
+
+```json
+{
+  "claimId": "CLM-MOREINFO-001",
+  "assessmentDate": "2026-06-12T11:20:22.696Z",
+  "documentReview": {
+    "summary": "2 documents submitted, 2 required for outpatient_surgery",
+    "documents": [
+      {
+        "documentId": "DOC-201",
+        "documentType": "medical_receipt",
+        "status": "complete",
+        "issues": [],
+        "isRequired": true
+      },
+      {
+        "documentId": "",
+        "documentType": "discharge_summary",
+        "status": "missing",
+        "issues": ["Document not submitted"],
+        "isRequired": true
+      },
+      {
+        "documentId": "DOC-202",
+        "documentType": "prescription",
+        "status": "type_mismatch",
+        "issues": [
+          "Document type 'prescription' does not match required document types: medical_receipt, discharge_summary"
+        ],
+        "isRequired": false
+      }
+    ],
+    "allRequiredDocumentsPresent": false
+  },
+  "policyVerification": {
+    "policyId": "POL-BASIC-001",
+    "memberName": "Bob Wilson",
+    "policyStatus": "active",
+    "claimTypeIsCovered": true,
+    "coveragePeriodValid": true,
+    "coveragePeriodDetails": "Treatment date not provided; coverage period validation skipped",
+    "benefitLimit": 15000,
+    "copay": 250,
+    "issues": []
+  },
+  "medicalNecessity": {
+    "diagnosis": "Appendectomy",
+    "procedures": ["appendectomy"],
+    "isClinicallySuitable": true,
+    "reasoning": "Appendectomy is the standard surgical treatment for appendicitis or appendix-related conditions",
+    "confidenceScore": 0.95,
+    "issues": []
+  },
+  "benefitCalculation": {
+    "submittedAmount": 5000,
+    "benefitLimit": 15000,
+    "coveredAmount": 5000,
+    "copay": 250,
+    "deductible": 0,
+    "memberResponsibility": 250,
+    "insuranceResponsibility": 4750,
+    "remainingBenefitLimit": 10000,
+    "details": "Covered $5000 of $5000 submitted. Copay: $250, Deductible: $0. Member responsible for $250."
+  },
+  "recommendation": {
+    "decision": "REQUEST_MORE_INFO",
+    "primaryReason": "Required document 'discharge_summary' is missing from submission",
+    "secondaryReasons": [
+      "Document 'prescription' submitted but 'discharge_summary' was expected"
+    ],
+    "actionItems": [
+      "Please provide: Required document 'discharge_summary' is missing from submission",
+      "Please provide: Document 'prescription' submitted but 'discharge_summary' was expected"
+    ]
+  },
+  "policyCitations": [
+    {
+      "clause": "Required Documents",
+      "clauseName": "Required Documentation Standards",
+      "citedText": "medical_receipt, discharge_summary",
+      "applicationToThisClaim": "Required document 'discharge_summary' is missing from submission"
+    },
+    {
+      "clause": "Required Documents",
+      "clauseName": "Required Documentation Standards",
+      "citedText": "medical_receipt, discharge_summary",
+      "applicationToThisClaim": "Document 'prescription' submitted but 'discharge_summary' was expected"
+    }
+  ],
+  "toolCallLog": [
+    {
+      "toolName": "verifyDocument",
+      "input": { "documentId": "DOC-201" },
+      "output": {
+        "documentId": "DOC-201",
+        "documentType": "medical_receipt",
+        "completeness": "complete",
+        "issues": [],
+        "submittedDate": "2026-05-15"
+      },
+      "timestamp": "2026-06-12T11:20:22.695Z",
+      "sequenceNumber": 1
+    },
+    {
+      "toolName": "verifyDocument",
+      "input": { "documentId": "DOC-202" },
+      "output": {
+        "documentId": "DOC-202",
+        "documentType": "prescription",
+        "completeness": "complete",
+        "issues": [],
+        "submittedDate": "2026-05-15"
+      },
+      "timestamp": "2026-06-12T11:20:22.695Z",
+      "sequenceNumber": 2
+    },
+    {
+      "toolName": "lookupPolicy",
+      "input": { "policyId": "POL-BASIC-001" },
+      "output": {
+        "policyId": "POL-BASIC-001",
+        "memberName": "Bob Wilson",
+        "memberId": "MEM-003",
+        "policyType": "basic",
+        "policyStartDate": "2025-01-01",
+        "policyEndDate": "2026-12-31",
+        "policyStatus": "active",
+        "coverageInclusions": [
+          {
+            "claimType": "outpatient_surgery",
+            "isCovered": true,
+            "benefitLimit": 15000,
+            "copay": 250,
+            "deductible": 0,
+            "waitingPeriod": 0,
+            "description": "Outpatient surgical procedures"
+          },
+          {
+            "claimType": "inpatient_hospitalization",
+            "isCovered": true,
+            "benefitLimit": 30000,
+            "copay": 500,
+            "deductible": 1000,
+            "waitingPeriod": 30,
+            "description": "Inpatient hospital stays"
+          }
+        ],
+        "exclusions": [
+          {
+            "exclusionType": "cosmetic_surgery",
+            "description": "Cosmetic procedures are excluded from coverage",
+            "policyClause": "4.2"
+          }
+        ],
+        "requiredDocuments": [
+          {
+            "claimType": "outpatient_surgery",
+            "requiredDocs": ["medical_receipt", "discharge_summary"]
+          },
+          {
+            "claimType": "inpatient_hospitalization",
+            "requiredDocs": ["medical_receipt", "discharge_summary", "doctor_note"]
+          }
+        ]
+      },
+      "timestamp": "2026-06-12T11:20:22.695Z",
+      "sequenceNumber": 3
+    },
+    {
+      "toolName": "checkMedicalNecessity",
+      "input": {
+        "diagnosis": "Appendectomy",
+        "procedures": ["appendectomy"]
+      },
+      "output": {
+        "diagnosis": "Appendectomy",
+        "procedures": ["appendectomy"],
+        "isClinicallySuitable": true,
+        "reasoning": "Appendectomy is the standard surgical treatment for appendicitis or appendix-related conditions",
+        "confidenceScore": 0.95
+      },
+      "timestamp": "2026-06-12T11:20:22.695Z",
+      "sequenceNumber": 4
+    },
+    {
+      "toolName": "calculateBenefit",
+      "input": {
+        "policyId": "POL-BASIC-001",
+        "claimType": "outpatient_surgery",
+        "amount": 5000
+      },
+      "output": {
+        "policyId": "POL-BASIC-001",
+        "claimType": "outpatient_surgery",
+        "submittedAmount": 5000,
+        "benefitLimit": 15000,
+        "copay": 250,
+        "deductibleApplied": 0,
+        "coveredAmount": 5000,
+        "memberResponsibility": 250,
+        "remainingBenefitLimit": 10000,
+        "details": "Covered $5000 of $5000 submitted. Copay: $250, Deductible: $0. Member responsible for $250."
+      },
+      "timestamp": "2026-06-12T11:20:22.695Z",
+      "sequenceNumber": 5
+    }
+  ]
+}
+```
 
 ## 10. Tool Call Logs
 
